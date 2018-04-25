@@ -1,4 +1,5 @@
 var express = require("express");
+var path = require("path");
 var router = express.Router();
 
 //===================================
@@ -9,20 +10,43 @@ var friends = require("./data/friends.js");
 
 module.exports = function (app) {
 
-    app.get("/api/friends", function (req, res) {
+    router.get("/api/friends", function (req, res) {
         return res.json(friends);
     });
 
-    app.post("/api/friends", function (req, res) {
+    router.post("/api/friends", function (req, res) {
 
+        //initialize variables and return as json object
         var vibetribe = req.body;
-        tableData.push(req.body);
-        res.json(true);
+        console.log(vibetribe);
 
+
+
+        var newScores = vibetribe.scores;
+        var differenceArray = [];
+        var matchIndex = 0;
+
+        //logic for scores
+
+        for (var i = 0; i < friends.length; ++i) {
+            var scoreDifference = 0;
+            for (var j = 0; j < newScores.length; ++j) {
+                scoreDifference += Math.abs(parseInt(vibetribe[i].scores[j]) - parseInt(newScores[j]));
+            }
+            differenceArray.push(scoreDifference);
+        }
+
+        for (var i = 0; i < differenceArray.length; ++i) {
+            if (differenceArray[i] <= differenceArray[matchIndex]) {
+                matchIndex = i;
+            }
+        }
+
+        console.log(vibetribe[matchIndex]);
+        res.json(true)
+
+        friends.push(vibetribe);
     });
-
-
-
 
 };
 
@@ -45,7 +69,7 @@ module.exports = function (app) {
 
 
 
-
+//??
 
 //         var newFriendSum = arraySum(newFriend.scores);
 //         var mostCompatibleFriend;
